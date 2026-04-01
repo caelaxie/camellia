@@ -1,0 +1,8 @@
+version: v2.11.4
+name: custom-gcl
+destination: .
+
+plugins:
+  - module: github.com/caelaxie/camellia
+    import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
+    path: .

@@ -1,0 +1,12 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - abbrcase
+  settings:
+    custom:
+      abbrcase:
+        type: module
+        description: Enforce camel-case abbreviations for project-defined Go identifiers.
+        original-url: github.com/caelaxie/camellia

@@ -1,0 +1,38 @@
+package a
+
+import (
+	"net/http"
+
+	"externaldep"
+)
+
+type APIError struct{} // want `identifier "APIError" should use camel-case abbreviations: "ApiError"`
+
+type ApiError struct{}
+
+type HTTPResult string // want `identifier "HTTPResult" should use camel-case abbreviations: "HttpResult"`
+
+type ReaderAPI interface { // want `identifier "ReaderAPI" should use camel-case abbreviations: "ReaderApi"`
+	ReadURL(apiURL string) HTTPResult // want `identifier "ReadURL" should use camel-case abbreviations: "ReadUrl"` `identifier "apiURL" should use camel-case abbreviations: "apiUrl"`
+}
+
+type UserRecord struct {
+	UserID string // want `identifier "UserID" should use camel-case abbreviations: "UserId"`
+}
+
+func ParseAPI(userID string, apiURL string) (httpURL string, HTTPResult string) { // want `identifier "ParseAPI" should use camel-case abbreviations: "ParseApi"` `identifier "userID" should use camel-case abbreviations: "userId"` `identifier "apiURL" should use camel-case abbreviations: "apiUrl"` `identifier "httpURL" should use camel-case abbreviations: "httpUrl"` `identifier "HTTPResult" should use camel-case abbreviations: "HttpResult"`
+	localAPI := APIError{} // want `identifier "localAPI" should use camel-case abbreviations: "localApi"`
+	_ = localAPI
+	_ = externaldep.APIError{}
+	_ = http.Client{}
+
+	return "", ""
+}
+
+func WrapAPI[TID any](value TID) TID { // want `identifier "WrapAPI" should use camel-case abbreviations: "WrapApi"` `identifier "TID" should use camel-case abbreviations: "Tid"`
+	return value
+}
+
+const DefaultURL = "https://example.test" // want `identifier "DefaultURL" should use camel-case abbreviations: "DefaultUrl"`
+
+var globalHTTPClient = 1 // want `identifier "globalHTTPClient" should use camel-case abbreviations: "globalHttpClient"`
