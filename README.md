@@ -4,6 +4,99 @@
 
 It flags names such as `APIError`, `UserID`, and `HTTPClient`, and suggests `ApiError`, `UserId`, and `HttpClient` instead.
 
+## Integrate Into Another Project
+
+Use Camellia through golangci-lint's module plugin system.
+
+### Prerequisites
+
+- Go
+- `git`
+- `golangci-lint` `v2.11.4`
+
+### 1. Create `.custom-gcl.yml`
+
+Remote integration:
+
+```yaml
+version: v2.11.4
+plugins:
+  - module: github.com/caelaxie/camellia
+    import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
+    version: <go-pseudo-version>
+```
+
+Camellia does not currently publish Git tags, so pin a Go pseudo-version for the commit you want.
+
+Local checkout integration:
+
+```yaml
+version: v2.11.4
+plugins:
+  - module: github.com/caelaxie/camellia
+    import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
+    path: ../camellia
+```
+
+### 2. Enable `abbrcase` in `.golangci.yml`
+
+Merge this into your existing config:
+
+```yaml
+linters:
+  enable:
+    - abbrcase
+  settings:
+    custom:
+      abbrcase:
+        type: module
+        description: Enforce camel-case abbreviations for project-defined Go identifiers.
+        original-url: github.com/caelaxie/camellia
+```
+
+Fresh-file example:
+
+```yaml
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - abbrcase
+  settings:
+    custom:
+      abbrcase:
+        type: module
+        description: Enforce camel-case abbreviations for project-defined Go identifiers.
+        original-url: github.com/caelaxie/camellia
+```
+
+### 3. Build and run
+
+Build the custom binary from the consumer repository:
+
+```bash
+golangci-lint custom
+```
+
+Run it:
+
+```bash
+./custom-gcl run ./...
+```
+
+If you change `.custom-gcl.yml` or a local Camellia checkout, rebuild `custom-gcl`.
+
+### 4. Verify
+
+Run the custom binary on code containing an identifier such as `UserID`. You should get a diagnostic that includes the suggested rename, for example `UserId`.
+
+### Troubleshooting
+
+- `abbrcase` must be configured with `type: module` in `.golangci.yml`.
+- The plugin import path must be `github.com/caelaxie/camellia/pkg/abbrcase/plugin`.
+- `./custom-gcl` must be rebuilt after changing `.custom-gcl.yml` or local Camellia plugin code.
+
 ## Rule
 
 The bundled linter is `abbrcase`.
@@ -55,3 +148,8 @@ linters:
 ```bash
 go test ./...
 ```
+
+## References
+
+- [golangci-lint Module Plugin System](https://golangci-lint.run/docs/plugins/module-plugins/)
+- [.golangci.yml](.golangci.yml)
