@@ -1,12 +1,48 @@
 version: "2"
 
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+  relative-path-mode: cfg
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
 linters:
   default: none
   enable:
     - abbrcase
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - gocritic
+    - revive
+    - nolintlint
+    - gosec
+  exclusions:
+    paths:
+      - ^pkg/abbrcase/testdata/
   settings:
     custom:
       abbrcase:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia
+    revive:
+      enable-default-rules: true
+      rules:
+        - name: exported
+          disabled: true
+        - name: package-comments
+          disabled: true
+
+output:
+  formats:
+    text:
+      path: stdout
+    sarif:
+      path: .golangci-cache/golangci-lint.sarif
