@@ -105,13 +105,19 @@ jobs:
       - name: Build release binary
         env:
           ARTIFACT_NAME: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          CGO_ENABLED: 0
-          GOARCH: ${{ matrix.goarch }}
-          GOOS: ${{ matrix.goos }}
           TOOLCHAIN_VERSION: ${{ needs.prepare.outputs.toolchain_version }}
         run: |
-          go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@"${TOOLCHAIN_VERSION}" custom
-          mv custom-gcl "${ARTIFACT_NAME}"
+          GOBIN="${RUNNER_TEMP}/golangci-lint-bin"
+          export GOBIN
+
+          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@"${TOOLCHAIN_VERSION}"
+
+          GOOS="${{ matrix.goos }}" \
+          GOARCH="${{ matrix.goarch }}" \
+          CGO_ENABLED=0 \
+          "${GOBIN}/golangci-lint" custom \
+            --version "${TOOLCHAIN_VERSION}" \
+            --name "${ARTIFACT_NAME}"
 
       - name: Smoke test release binary
         if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
