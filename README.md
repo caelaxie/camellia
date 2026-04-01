@@ -23,10 +23,10 @@ version: v2.11.4
 plugins:
   - module: github.com/caelaxie/camellia
     import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
-    version: <go-pseudo-version>
+    version: v0.0.1
 ```
 
-Camellia does not currently publish Git tags, so pin a Go pseudo-version for the commit you want.
+Pin the plugin with a normal Go module semver tag such as `v0.0.1`.
 
 Local checkout integration:
 
