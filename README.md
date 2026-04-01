@@ -23,10 +23,10 @@ version: v2.11.4
 plugins:
   - module: github.com/caelaxie/camellia
     import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
-    version: <go-pseudo-version>
+    version: v0.0.1
 ```
 
-Camellia does not currently publish Git tags, so pin a Go pseudo-version for the commit you want.
+Pin the plugin with a normal Go module semver tag such as `v0.0.1`.
 
 Local checkout integration:
 
@@ -148,6 +148,23 @@ linters:
 ```bash
 go test ./...
 ```
+
+## Releases
+
+The Camellia plugin module can be pinned with semver tags such as `v0.0.1`.
+
+Tagged `custom-gcl` binaries are published separately from `custom-gcl/v*` tags.
+
+The `custom-gcl` release version identifies the packaged binary distribution, not the Camellia Go module version used in a consumer's `.custom-gcl.yml`. Each release is built against the `golangci-lint` toolchain pinned in [`.custom-gcl.yml`](./.custom-gcl.yml), currently `v2.11.4`. If that pin changes, publish a new `custom-gcl` release line so the distributed binary stays aligned with the bundled toolchain.
+
+Each GitHub Release publishes only:
+
+- `custom-gcl_<release>_linux_amd64`
+- `custom-gcl_<release>_darwin_amd64`
+- `custom-gcl_<release>_darwin_arm64`
+- `custom-gcl_<release>_checksums.txt`
+
+The checksum manifest contains SHA-256 sums for every attached binary.
 
 ## References
 

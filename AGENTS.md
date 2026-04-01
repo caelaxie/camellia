@@ -9,6 +9,10 @@
 
 - `abbrcase` enforces this rule for identifiers declared in project files. Keep code, tests, and docs aligned with that behavior.
 
+## Documentation
+
+- Do not update `README.md` unless the user explicitly asks for a README change.
+
 ## Validation
 
 - Build the repo-local custom `golangci-lint` binary with:
