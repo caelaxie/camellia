@@ -149,23 +149,6 @@ linters:
 go test ./...
 ```
 
-## Releases
-
-The Camellia plugin module can be pinned with semver tags such as `v0.0.1`.
-
-Tagged `custom-gcl` binaries are published separately from `custom-gcl/v*` tags.
-
-The `custom-gcl` release version identifies the packaged binary distribution, not the Camellia Go module version used in a consumer's `.custom-gcl.yml`. Each release is built against the `golangci-lint` toolchain pinned in [`.custom-gcl.yml`](./.custom-gcl.yml), currently `v2.11.4`. If that pin changes, publish a new `custom-gcl` release line so the distributed binary stays aligned with the bundled toolchain.
-
-Each GitHub Release publishes only:
-
-- `custom-gcl_<release>_linux_amd64`
-- `custom-gcl_<release>_darwin_amd64`
-- `custom-gcl_<release>_darwin_arm64`
-- `custom-gcl_<release>_checksums.txt`
-
-The checksum manifest contains SHA-256 sums for every attached binary.
-
 ## References
 
 - [golangci-lint Module Plugin System](https://golangci-lint.run/docs/plugins/module-plugins/)
