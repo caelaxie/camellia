@@ -1,1 +1,6 @@
 .DS_Store
+.gocache/
+.golangci-cache/
+.gomodcache/
+.gopath/
+/custom-gcl
