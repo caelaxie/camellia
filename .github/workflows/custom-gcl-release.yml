@@ -3,7 +3,7 @@ name: custom-gcl release
 on:
   push:
     tags:
-      - "custom-gcl/v*"
+      - "v*.*.*"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -28,7 +28,9 @@ jobs:
       toolchain_version: ${{ steps.toolchain.outputs.version }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Read pinned golangci-lint version
         id: toolchain
@@ -44,7 +46,12 @@ jobs:
       - name: Derive release metadata
         id: release_meta
         run: |
-          release_version="${GITHUB_REF_NAME#custom-gcl/}"
+          if ! printf '%s\n' "${GITHUB_REF_NAME}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "tag must match vMAJOR.MINOR.PATCH: ${GITHUB_REF_NAME}" >&2
+            exit 1
+          fi
+
+          release_version="${GITHUB_REF_NAME}"
           artifact_prefix="custom-gcl_${release_version}"
           checksum_file="${artifact_prefix}_checksums.txt"
 
@@ -57,6 +64,10 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -69,17 +80,19 @@ jobs:
             goarch: arm64
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Set up Go
         id: setup_go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           cache: false
           go-version-file: go.mod
 
       - name: Restore Go caches
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: |
             .gomodcache
@@ -100,8 +113,21 @@ jobs:
           go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@"${TOOLCHAIN_VERSION}" custom
           mv custom-gcl "${ARTIFACT_NAME}"
 
+      - name: Smoke test release binary
+        if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
+        env:
+          ARTIFACT_NAME: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
+        run: |
+          "./${ARTIFACT_NAME}" version
+          "./${ARTIFACT_NAME}" linters -c .golangci.yml | grep -q '^abbrcase:'
+
+      - name: Generate build provenance attestation
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4
+        with:
+          subject-path: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
+
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
           path: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
@@ -117,7 +143,7 @@ jobs:
       contents: write
     steps:
       - name: Download release artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
           merge-multiple: true
           path: dist
@@ -131,12 +157,24 @@ jobs:
           sha256sum custom-gcl_* > "${CHECKSUM_FILE}"
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          body: |
-            Built from `github.com/caelaxie/camellia` with the pinned `golangci-lint` toolchain `${{ needs.prepare.outputs.toolchain_version }}` from `.custom-gcl.yml`.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.prepare.outputs.release_version }}
+          TOOLCHAIN_VERSION: ${{ needs.prepare.outputs.toolchain_version }}
+        run: |
+          release_notes="$(cat <<EOF
+          Built from \`github.com/caelaxie/camellia\` with the pinned \`golangci-lint\` toolchain \`${TOOLCHAIN_VERSION}\` from \`.custom-gcl.yml\`.
 
-            This release publishes only the `custom-gcl` binaries for `linux-amd64`, `darwin-amd64`, and `darwin-arm64`, plus the SHA-256 checksum manifest.
-          files: |
-            dist/${{ needs.prepare.outputs.artifact_prefix }}_*
-          name: custom-gcl ${{ needs.prepare.outputs.release_version }}
+          This release publishes only the \`custom-gcl\` binaries for \`linux-amd64\`, \`darwin-amd64\`, and \`darwin-arm64\`, plus the SHA-256 checksum manifest.
+          EOF
+          )"
+
+          if gh release view "${RELEASE_VERSION}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_VERSION}" dist/${{ needs.prepare.outputs.artifact_prefix }}_* --clobber
+          else
+            gh release create "${RELEASE_VERSION}" dist/${{ needs.prepare.outputs.artifact_prefix }}_* \
+              --generate-notes \
+              --notes "${release_notes}" \
+              --title "custom-gcl ${RELEASE_VERSION}" \
+              --verify-tag
+          fi
