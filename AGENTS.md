@@ -9,8 +9,8 @@
 
 - `camellia` enforces this rule for identifiers declared in project files. Keep code, tests, and docs aligned with that behavior.
 - Preserve analyzer coverage across project declarations and `_test.go` files unless the user asks to change lint scope.
-- Keep imported and third-party symbols out of `camellia` diagnostics; the fixture coverage in `internal/camellia/testdata/` relies on that behavior.
-- Treat `internal/camellia/testdata/` as `analysistest` fixture input, not normal package code. Keep its expected diagnostics aligned with analyzer changes.
+- Keep imported and third-party symbols out of `camellia` diagnostics; the fixture coverage in `internal/testdata/` relies on that behavior.
+- Treat `internal/testdata/` as `analysistest` fixture input, not normal package code. Keep its expected diagnostics aligned with analyzer changes.
 
 ## Generated Files
 
@@ -29,14 +29,14 @@
 
 ## Testing
 
-- When changing abbreviation detection, update both `internal/camellia/normalize_test.go` and the `analysistest` fixtures under `internal/camellia/testdata/` together.
+- When changing abbreviation detection, update both `internal/normalize_test.go` and the `analysistest` fixtures under `internal/testdata/` together.
 - If sandboxed `go test ./...` cannot write to the global Go cache, rerun with repo-local `GOPATH`, `GOMODCACHE`, and `GOCACHE` instead of changing test behavior.
 
 ## Validation
 
 - Prefer repo-local Go caches for validation commands:
   `env GOPATH="$(pwd)/.gopath" GOMODCACHE="$(pwd)/.gomodcache" GOCACHE="$(pwd)/.gocache" ...`
-- Preserve the repository lint policy in `.golangci.yml` unless the user asks to change it: analyze test files, keep `modules-download-mode: readonly`, and continue excluding `^internal/camellia/testdata/` from reported issues.
+- Preserve the repository lint policy in `.golangci.yml` unless the user asks to change it: analyze test files, keep `modules-download-mode: readonly`, and continue excluding `^internal/testdata/` from reported issues.
 - Build the repo-local custom `golangci-lint` binary with:
   `env GOPATH="$(pwd)/.gopath" GOMODCACHE="$(pwd)/.gomodcache" GOCACHE="$(pwd)/.gocache" go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.4 custom`
 - Run lint with:

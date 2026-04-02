@@ -25,7 +25,7 @@ linters:
     - gosec
   exclusions:
     paths:
-      - ^internal/camellia/testdata/
+      - ^internal/testdata/
   settings:
     custom:
       camellia:

@@ -4,7 +4,7 @@ import (
 	"github.com/golangci/plugin-module-register/register"
 	"golang.org/x/tools/go/analysis"
 
-	internalcamellia "github.com/caelaxie/camellia/internal/camellia"
+	internalcamellia "github.com/caelaxie/camellia/internal"
 )
 
 func init() {

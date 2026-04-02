@@ -5,12 +5,12 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/caelaxie/camellia/internal/camellia"
+	camelliainternal "github.com/caelaxie/camellia/internal"
 )
 
 func TestAnalyzer(t *testing.T) {
 	t.Parallel()
 
 	testdata := analysistest.TestData()
-	analysistest.Run(t, testdata, camellia.Analyzer, "a")
+	analysistest.Run(t, testdata, camelliainternal.Analyzer, "a")
 }
