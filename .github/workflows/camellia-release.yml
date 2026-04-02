@@ -1,4 +1,4 @@
-name: custom-gcl release
+name: camellia release
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
           fi
 
           release_version="${GITHUB_REF_NAME}"
-          artifact_prefix="custom-gcl_${release_version}"
+          artifact_prefix="camellia_${release_version}"
           checksum_file="${artifact_prefix}_checksums.txt"
 
           echo "release_version=${release_version}" >> "${GITHUB_OUTPUT}"
@@ -125,7 +125,7 @@ jobs:
           ARTIFACT_NAME: ${{ needs.prepare.outputs.artifact_prefix }}_${{ matrix.goos }}_${{ matrix.goarch }}
         run: |
           "./${ARTIFACT_NAME}" version
-          "./${ARTIFACT_NAME}" linters -c .golangci.yml | grep -q '^abbrcase:'
+          "./${ARTIFACT_NAME}" linters -c .golangci.yml | grep -q '^camellia:'
 
       - name: Generate build provenance attestation
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4
@@ -160,7 +160,7 @@ jobs:
         env:
           CHECKSUM_FILE: ${{ needs.prepare.outputs.checksum_file }}
         run: |
-          sha256sum custom-gcl_* > "${CHECKSUM_FILE}"
+          sha256sum camellia_* > "${CHECKSUM_FILE}"
 
       - name: Publish GitHub Release
         env:
@@ -172,7 +172,7 @@ jobs:
           release_notes="$(cat <<EOF
           Built from \`github.com/caelaxie/camellia\` with the pinned \`golangci-lint\` toolchain \`${TOOLCHAIN_VERSION}\` from \`.custom-gcl.yml\`.
 
-          This release publishes only the \`custom-gcl\` binaries for \`linux-amd64\`, \`darwin-amd64\`, and \`darwin-arm64\`, plus the SHA-256 checksum manifest.
+          This release publishes only the \`camellia\` binaries for \`linux-amd64\`, \`darwin-amd64\`, and \`darwin-arm64\`, plus the SHA-256 checksum manifest.
           EOF
           )"
 
@@ -182,6 +182,6 @@ jobs:
             gh release create "${RELEASE_VERSION}" dist/${{ needs.prepare.outputs.artifact_prefix }}_* \
               --generate-notes \
               --notes "${release_notes}" \
-              --title "custom-gcl ${RELEASE_VERSION}" \
+              --title "camellia ${RELEASE_VERSION}" \
               --verify-tag
           fi

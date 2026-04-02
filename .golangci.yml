@@ -13,7 +13,7 @@ issues:
 linters:
   default: none
   enable:
-    - abbrcase
+    - camellia
     - govet
     - staticcheck
     - errcheck
@@ -25,10 +25,10 @@ linters:
     - gosec
   exclusions:
     paths:
-      - ^pkg/abbrcase/testdata/
+      - ^internal/camellia/testdata/
   settings:
     custom:
-      abbrcase:
+      camellia:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia

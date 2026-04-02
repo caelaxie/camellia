@@ -1,14 +1,14 @@
-package plugin
+package camellia
 
 import (
 	"github.com/golangci/plugin-module-register/register"
 	"golang.org/x/tools/go/analysis"
 
-	"github.com/caelaxie/camellia/pkg/abbrcase"
+	internalcamellia "github.com/caelaxie/camellia/internal/camellia"
 )
 
 func init() {
-	register.Plugin("abbrcase", New)
+	register.Plugin("camellia", New)
 }
 
 type settings struct{}
@@ -26,7 +26,7 @@ func New(rawSettings any) (register.LinterPlugin, error) {
 }
 
 func (p *linterPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
-	return []*analysis.Analyzer{abbrcase.Analyzer}, nil
+	return []*analysis.Analyzer{internalcamellia.Analyzer}, nil
 }
 
 func (p *linterPlugin) GetLoadMode() string {

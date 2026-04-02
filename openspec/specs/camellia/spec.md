@@ -1,6 +1,6 @@
 ## Purpose
 
-Define the repository requirement for enforcing camel-case abbreviation naming in project-defined Go identifiers through the custom golangci-lint workflow.
+Define the repository requirement for enforcing camel-case abbreviation naming in project-defined Go identifiers through the `camellia` golangci-lint workflow.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ The system SHALL analyze all Go identifier declarations defined in project code,
 
 #### Scenario: Project declaration is analyzed
 - **WHEN** `golangci-lint` runs on a project package containing a declared identifier such as a type, field, local variable, parameter, result, or type parameter
-- **THEN** the custom linter evaluates that declaration for abbreviation-casing violations
+- **THEN** the `camellia` linter evaluates that declaration for abbreviation-casing violations
 
 ### Requirement: Enforce camel-case abbreviations with no exceptions
 The system SHALL reject any project-defined identifier declaration that contains an all-uppercase abbreviation run and SHALL require the abbreviation to be written in camel-case form, with no exceptions for common acronyms such as `ID`, `URL`, `HTTP`, or `API`.
@@ -33,8 +33,8 @@ The system SHALL include the corrected camel-case replacement name in each diagn
 - **THEN** the diagnostic message includes the corrected spelling `ApiError`
 
 ### Requirement: Run through repository golangci-lint workflow
-The system SHALL be integrated into the repository's `golangci-lint` workflow so the abbreviation-casing rule runs as part of project linting.
+The system SHALL be integrated into the repository's `camellia` golangci-lint workflow so the abbreviation-casing rule runs as part of project linting.
 
 #### Scenario: Repository lint run executes custom rule
-- **WHEN** a developer runs the repository's configured `golangci-lint` workflow
-- **THEN** the custom abbreviation-casing linter runs and emits diagnostics for project-defined violations
+- **WHEN** a developer runs the repository's configured `camellia` workflow
+- **THEN** the `camellia` linter runs and emits diagnostics for project-defined violations
