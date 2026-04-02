@@ -164,6 +164,7 @@ jobs:
 
       - name: Publish GitHub Release
         env:
+          GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
           RELEASE_VERSION: ${{ needs.prepare.outputs.release_version }}
           TOOLCHAIN_VERSION: ${{ needs.prepare.outputs.toolchain_version }}
