@@ -3,6 +3,7 @@ package camellia
 import (
 	"go/ast"
 	"go/token"
+	"go/types"
 	"path/filepath"
 
 	"golang.org/x/tools/go/analysis"
@@ -20,6 +21,10 @@ func run(pass *analysis.Pass) (any, error) {
 
 	for ident, obj := range pass.TypesInfo.Defs {
 		if ident == nil || obj == nil || ident.Name == "_" {
+			continue
+		}
+
+		if _, ok := obj.(*types.PkgName); ok {
 			continue
 		}
 
