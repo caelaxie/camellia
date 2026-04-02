@@ -22,7 +22,7 @@ Remote integration:
 version: v2.11.4
 plugins:
   - module: github.com/caelaxie/camellia
-    import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
+    import: github.com/caelaxie/camellia
     version: v0.0.1
 ```
 
@@ -34,21 +34,21 @@ Local checkout integration:
 version: v2.11.4
 plugins:
   - module: github.com/caelaxie/camellia
-    import: github.com/caelaxie/camellia/pkg/abbrcase/plugin
+    import: github.com/caelaxie/camellia
     path: ../camellia
 ```
 
-### 2. Enable `abbrcase` in `.golangci.yml`
+### 2. Enable `camellia` in `.golangci.yml`
 
 Merge this into your existing config:
 
 ```yaml
 linters:
   enable:
-    - abbrcase
+    - camellia
   settings:
     custom:
-      abbrcase:
+      camellia:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia
@@ -62,10 +62,10 @@ version: "2"
 linters:
   default: none
   enable:
-    - abbrcase
+    - camellia
   settings:
     custom:
-      abbrcase:
+      camellia:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia
@@ -82,10 +82,10 @@ golangci-lint custom
 Run it:
 
 ```bash
-./custom-gcl run ./...
+./camellia run ./...
 ```
 
-If you change `.custom-gcl.yml` or a local Camellia checkout, rebuild `custom-gcl`.
+If you change `.custom-gcl.yml` or a local Camellia checkout, rebuild `camellia`.
 
 ### 4. Verify
 
@@ -93,13 +93,13 @@ Run the custom binary on code containing an identifier such as `UserID`. You sho
 
 ### Troubleshooting
 
-- `abbrcase` must be configured with `type: module` in `.golangci.yml`.
-- The plugin import path must be `github.com/caelaxie/camellia/pkg/abbrcase/plugin`.
-- `./custom-gcl` must be rebuilt after changing `.custom-gcl.yml` or local Camellia plugin code.
+- `camellia` must be configured with `type: module` in `.golangci.yml`.
+- The plugin import path must be `github.com/caelaxie/camellia`.
+- `./camellia` must be rebuilt after changing `.custom-gcl.yml` or local Camellia plugin code.
 
 ## Rule
 
-The bundled linter is `abbrcase`.
+The bundled linter is `camellia`.
 
 It reports project-defined declarations that use all-caps acronym runs:
 
@@ -121,7 +121,7 @@ env GOPATH="$(pwd)/.gopath" GOMODCACHE="$(pwd)/.gomodcache" GOCACHE="$(pwd)/.goc
   go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.4 custom
 ```
 
-The build uses [`.custom-gcl.yml`](./.custom-gcl.yml), which registers `github.com/caelaxie/camellia/pkg/abbrcase/plugin`.
+The build uses [`.custom-gcl.yml`](./.custom-gcl.yml), which registers `github.com/caelaxie/camellia`.
 
 ## Run
 
@@ -129,10 +129,10 @@ Run the generated binary with the repo-local cache:
 
 ```bash
 env GOPATH="$(pwd)/.gopath" GOMODCACHE="$(pwd)/.gomodcache" GOCACHE="$(pwd)/.gocache" \
-  GOLANGCI_LINT_CACHE="$(pwd)/.golangci-cache" ./custom-gcl run ./...
+  GOLANGCI_LINT_CACHE="$(pwd)/.golangci-cache" ./camellia run ./...
 ```
 
-The repo's [`.golangci.yml`](./.golangci.yml) enables `abbrcase` like this:
+The repo's [`.golangci.yml`](./.golangci.yml) enables `camellia` like this:
 
 ```yaml
 version: "2"
@@ -140,7 +140,7 @@ version: "2"
 linters:
   default: none
   enable:
-    - abbrcase
+    - camellia
 ```
 
 ## Test

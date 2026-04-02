@@ -1,4 +1,4 @@
-package abbrcase
+package camellia
 
 import (
 	"go/ast"
@@ -11,7 +11,7 @@ import (
 
 // Analyzer reports identifier declarations that use all-caps abbreviations.
 var Analyzer = &analysis.Analyzer{
-	Name: "abbrcase",
+	Name: "camellia",
 	Doc:  "reports identifier declarations that use all-caps abbreviations instead of camel-case abbreviations",
 	Run:  run,
 }
