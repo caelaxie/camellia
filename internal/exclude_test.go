@@ -161,15 +161,15 @@ func TestModuleRootFinderRelativePath(t *testing.T) {
 	nestedDir := filepath.Join(rootDir, "internal", "nested")
 	filePath := filepath.Join(nestedDir, "sample.go")
 
-	if err := os.MkdirAll(nestedDir, 0o755); err != nil {
+	if err := os.MkdirAll(nestedDir, 0o750); err != nil {
 		t.Fatalf("MkdirAll() error = %v", err)
 	}
 
-	if err := os.WriteFile(filepath.Join(rootDir, "go.mod"), []byte("module example.com/test\n\ngo 1.25.4\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(rootDir, "go.mod"), []byte("module example.com/test\n\ngo 1.25.4\n"), 0o600); err != nil {
 		t.Fatalf("WriteFile(go.mod) error = %v", err)
 	}
 
-	if err := os.WriteFile(filePath, []byte("package nested\n"), 0o644); err != nil {
+	if err := os.WriteFile(filePath, []byte("package nested\n"), 0o600); err != nil {
 		t.Fatalf("WriteFile(sample.go) error = %v", err)
 	}
 
