@@ -52,6 +52,10 @@ linters:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia
+        settings:
+          exclude:
+            - internal/testdata
+            - generated/**/*.go
 ```
 
 Fresh-file example:
@@ -69,7 +73,17 @@ linters:
         type: module
         description: Enforce camel-case abbreviations for project-defined Go identifiers.
         original-url: github.com/caelaxie/camellia
+        settings:
+          exclude:
+            - internal/testdata
+            - generated/**/*.go
 ```
+
+`exclude` is optional and applies only to `camellia`. Entries are resolved relative to the nearest module root.
+
+- Use a file path such as `internal/legacy/id_aliases.go` to exclude one file.
+- Use a bare directory such as `internal/testdata` to exclude that directory and everything under it.
+- Use a glob such as `generated/**/*.go` for recursive pattern matches.
 
 ### 3. Build and run
 
